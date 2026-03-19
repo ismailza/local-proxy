@@ -33,7 +33,7 @@ export default defineConfig({
         {
           icon: "github",
           label: "GitHub",
-          href: "https://github.com/BoumouzounaBrahimVall",
+          href: "https://github.com/BoumouzounaBrahimVall/local-proxy",
         },
       ],
       sidebar: [
