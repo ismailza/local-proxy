@@ -42,6 +42,7 @@ export default defineConfig({
           label: "Guide",
           items: [
             { label: "Getting Started", slug: "getting-started" },
+            { label: "Example", slug: "example" },
             { label: "CLI Reference", slug: "cli-reference" },
             { label: "Scenarios", slug: "scenarios" },
           ],

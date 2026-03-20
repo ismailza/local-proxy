@@ -1,0 +1,164 @@
+---
+title: Example
+description: A story-driven, step-by-step walkthrough for using local-proxy
+---
+
+import { Card, CardGrid } from "@astrojs/starlight/components";
+
+## The situation (my “why”)
+
+I was building a frontend screen that had multiple UI states depending on backend data:
+
+* prepaid user with no bills
+* prepaid user with unpaid bills
+* postpaid user
+* a zero-balance edge case
+* error state
+
+The problem wasn’t UI components — it was reproducing the exact backend responses at the exact moment during development.
+
+* Switching “test accounts” was slow and unstable.
+* Fully mocking the API caused schema drift (so integration confidence dropped).
+* Mocking inside the app (feature flags, fake services) risked leaking into production code.
+
+So I used `local-proxy` for **selective mocking**: mock only the endpoint I’m actively working on, and forward the rest to the real backend.
+
+## What this example will do
+
+You’ll set up a proxy that:
+
+1. Forwards everything to your real API.
+2. Intercepts one request (for example, `POST /v1/lines/balance`) and returns different JSON based on your `active_scenario`.
+3. Lets you switch scenarios by editing `scenarios.json` and refreshing your frontend (no redeploy).
+
+## Step-by-step: run a story scenario
+
+### 1. Install local-proxy
+
+```bash
+npm install -g @bvbmz/local-proxy
+```
+
+### 2. Scaffold `scenarios.json`
+
+From your project folder:
+
+```bash
+local-proxy --init
+```
+
+This creates `scenarios.json`.
+
+### 3. Start the proxy (point it at your real API)
+
+```bash
+local-proxy --target https://api.example.com
+```
+
+By default, local-proxy listens on:
+
+* `http://localhost:5050/api`
+
+So your frontend should use `http://localhost:5050/api` as its API base URL while developing.
+
+### 4. Configure a mock rule for the endpoint you’re developing
+
+Open `scenarios.json` and add a rule for the request you want to control.
+
+Example (based on the story endpoint pattern):
+
+```json
+{
+  "rules": [
+    {
+      "method": "POST",
+      "match": "/v1/lines/balance",
+      "enabled": true,
+      "active_scenario": "prepaid_no_bills",
+      "scenarios": {
+        "prepaid_no_bills": {
+          "status": 200,
+          "file": "fixtures/prepaid_no_bills.json"
+        },
+        "prepaid_with_bills": {
+          "status": 200,
+          "file": "fixtures/prepaid_with_bills.json"
+        },
+        "error500": {
+          "status": 500,
+          "json": { "message": "Internal Server Error" }
+        }
+      }
+    }
+  ]
+}
+```
+
+Notes:
+
+* `method` + `match` must match the request your frontend is actually making.
+* `match` is the path *behind* the proxy’s API prefix (you typically call `/api/...` in the browser, but match `/v1/...` in `scenarios.json`).
+
+### 5. Switch scenarios instantly
+
+To test a different UI state, change just:
+
+* `active_scenario`
+
+For example:
+
+* set `"active_scenario": "prepaid_with_bills"` to see the “unpaid bills” UI
+* set `"active_scenario": "error500"` to see the error screen
+
+Then refresh your frontend.
+
+### 6. Optional: simulate slow responses
+
+If you want to test loading spinners or timeout handling, add `delay` to a scenario:
+
+```json
+{
+  "status": 200,
+  "delay": 3,
+  "file": "fixtures/prepaid_no_bills.json"
+}
+```
+
+### 7. Verify the mock is being used
+
+Make the request your frontend normally makes, but point it at your proxy.
+
+For example:
+
+```bash
+curl -X POST "http://localhost:5050/api/v1/lines/balance" \
+  -H "Content-Type: application/json" \
+  -d '{ "example": "payload" }'
+```
+
+If your rule matches, you should get the `status` / `json` / `file` response from your `active_scenario`.
+
+If you call an endpoint that requires auth, include the same headers/tokens your frontend uses.
+
+### 8. Troubleshooting (most common issues)
+
+* Your mock doesn’t trigger: double-check `method`, `match`, and `enabled: true`.
+* Your frontend isn’t reaching the proxy: ensure your app’s API base is `http://localhost:5050/api` (or set `--api-prefix` to match whatever your app calls).
+* Scenario changes aren’t taking effect: edit `scenarios.json`, then refresh/retry the request (the proxy reads the latest config each request in this workflow).
+
+## Keep it targeted (best practice)
+
+When you’re developing, add rules only for the few endpoints you’re actively changing.
+
+<CardGrid>
+  <Card title="Mock the active endpoint" icon="rocket">
+    Keep `local-proxy` focused so everything else stays real.
+  </Card>
+  <Card title="Edit JSON, refresh UI" icon="random">
+    Scenario switching should be a config edit, not a rebuild.
+  </Card>
+  <Card title="Use fixtures for realism" icon="seti:folder">
+    Put bigger payloads in `fixtures/` and reference them from `scenarios.json`.
+  </Card>
+</CardGrid>
+
