@@ -7,24 +7,22 @@ import { Card, CardGrid } from "@astrojs/starlight/components";
 
 ## Start in under 2 minutes
 
-<div class="terminal-block">
-  <div><span class="prompt">$</span> <span class="cmd">npm install -g @bvbmz/local-proxy</span></div>
-</div>
+```bash
+  npm install -g @bvbmz/local-proxy
+```
 
 Or run instantly with `npx`:
 
-<div class="terminal-block">
-  <div><span class="prompt">$</span> <span class="cmd">npx @bvbmz/local-proxy --target https://api.example.com</span></div>
-</div>
+```bash
+  npx @bvbmz/local-proxy --target https://api.example.com
+```
 
-<div class="terminal-block">
-  <div><span class="comment"># 1) scaffold config</span></div>
-  <div><span class="prompt">$</span> <span class="cmd">local-proxy --init</span></div>
-  <div><span class="output">Created scenarios.json</span></div>
-  <div style="margin-top:0.6rem"><span class="comment"># 2) run proxy</span></div>
-  <div><span class="prompt">$</span> <span class="cmd">local-proxy --target https://api.example.com</span></div>
-  <div><span class="output">Local proxy running at http://localhost:5050/api</span></div>
-</div>
+```bash
+  # 1) scaffold config
+  local-proxy --init
+  # 2) run proxy
+  local-proxy --target https://api.example.com
+```
 
 ## Default runtime
 
@@ -34,9 +32,9 @@ Or run instantly with `npx`:
 
 Point your frontend to:
 
-<div class="terminal-block">
-  <div><span class="cmd">http://localhost:5050/api</span></div>
-</div>
+```bash
+  http://localhost:5050/api
+```
 
 ## Step-by-step flow
 
@@ -60,7 +58,7 @@ CLI flags take precedence over env vars.
 ## Common next moves
 
 <CardGrid>
-  <Card title="Need full option list?" icon="list-tree">
+  <Card title="Need full option list?" icon="list-format">
     Jump to <a href="/local-proxy/cli-reference/">CLI Reference</a>.
   </Card>
   <Card title="Want realistic mocks?" icon="seti:json">

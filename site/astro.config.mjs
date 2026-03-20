@@ -21,6 +21,7 @@ export default defineConfig({
     starlight({
       components: {
         Header: "./src/components/Header.astro",
+        PageFrame: "./src/components/PageFrame.astro",
       },
       title: "local-proxy",
       description: "Scenario-driven local API proxy for local development",

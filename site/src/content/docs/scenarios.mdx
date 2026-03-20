@@ -9,25 +9,25 @@ import { Card, CardGrid } from "@astrojs/starlight/components";
 
 `scenarios.json` contains an array of rules:
 
-<div class="terminal-block">
-  <div><span class="cmd">{'{'}</span></div>
-  <div><span class="cmd">&nbsp;&nbsp;"rules": [</span></div>
-  <div><span class="cmd">&nbsp;&nbsp;&nbsp;&nbsp;{'{'}</span></div>
-  <div><span class="cmd">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"method": "GET",</span></div>
-  <div><span class="cmd">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"match": "/v1/example",</span></div>
-  <div><span class="cmd">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"enabled": true,</span></div>
-  <div><span class="cmd">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"active_scenario": "success",</span></div>
-  <div><span class="cmd">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"scenarios": {'{'} ... {'}'}</span></div>
-  <div><span class="cmd">&nbsp;&nbsp;&nbsp;&nbsp;{'}'}</span></div>
-  <div><span class="cmd">&nbsp;&nbsp;]</span></div>
-  <div><span class="cmd">{'}'}</span></div>
-</div>
+```json
+  {
+    "rules": [
+      {
+        "method": "GET",
+        "match": "/v1/example",
+        "enabled": true,
+        "active_scenario": "success",
+        "scenarios": { ... }
+      }
+    ]
+  }
+```
 
-<div class="terminal-block">
-  <div><span class="comment"># hot workflow</span></div>
-  <div><span class="cmd">Change "active_scenario" from "success" to "error"</span></div>
-  <div><span class="output">See frontend behavior instantly</span></div>
-</div>
+```bash
+  # hot workflow
+  Change "active_scenario" from "success" to "error"
+  See frontend behavior instantly
+```
 
 ## Rule fields
 

@@ -7,14 +7,14 @@ import { Card, CardGrid } from "@astrojs/starlight/components";
 
 ## Usage
 
-<div class="terminal-block">
-  <div><span class="prompt">$</span> <span class="cmd">local-proxy [options]</span></div>
-</div>
+```bash
+  local-proxy [options]
+```
 
-<div class="terminal-block">
-  <div><span class="comment"># typical development command</span></div>
-  <div><span class="prompt">$</span> <span class="cmd">local-proxy --target https://api.example.com --port 5050</span></div>
-</div>
+```bash
+  # typical development command
+  local-proxy --target https://api.example.com --port 5050
+```
 
 ## Options
 
@@ -30,14 +30,14 @@ import { Card, CardGrid } from "@astrojs/starlight/components";
 
 ## Examples
 
-<div class="terminal-block">
-  <div><span class="comment"># basic</span></div>
-  <div><span class="prompt">$</span> <span class="cmd">local-proxy --target https://api.example.com</span></div>
-  <div style="margin-top:0.6rem"><span class="comment"># custom port and scenarios file</span></div>
-  <div><span class="prompt">$</span> <span class="cmd">local-proxy --target https://api.example.com --port 3000 --scenarios ./mocks/scenarios.json</span></div>
-  <div style="margin-top:0.6rem"><span class="comment"># custom API prefix</span></div>
-  <div><span class="prompt">$</span> <span class="cmd">local-proxy --target https://api.example.com --api-prefix /backend</span></div>
-</div>
+  ```bash
+  # basic
+  local-proxy --target https://api.example.com
+  # custom port and scenarios file
+  local-proxy --target https://api.example.com --port 3000 --scenarios ./mocks/scenarios.json
+  # custom API prefix
+  local-proxy --target https://api.example.com --api-prefix /backend
+```
 
 ## Option tips
 
