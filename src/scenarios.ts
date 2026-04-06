@@ -4,7 +4,7 @@ import type { ScenariosConfig, Rule, Scenario, FileSystem } from "./types";
 
 export interface ScenarioLoader {
   load(scenariosPath: string): ScenariosConfig;
-  getFixture(filePath: string): string | null;
+  getFixture(filePath: string): Buffer | null;
 }
 
 export function createScenarioLoader(
@@ -36,10 +36,10 @@ export function createScenarioLoader(
       return result.data;
     },
 
-    getFixture(filePath: string): string | null {
+    getFixture(filePath: string): Buffer | null {
       const fullPath = path.resolve(basePath, filePath);
       if (!fs.existsSync(fullPath)) return null;
-      return fs.readFileSync(fullPath, "utf-8");
+      return fs.readFileSync(fullPath);
     },
   };
 }

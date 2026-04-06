@@ -15,6 +15,7 @@ export interface Logger {
 export interface FileSystem {
   existsSync(path: string): boolean;
   readFileSync(path: string, encoding: BufferEncoding): string;
+  readFileSync(path: string): Buffer;
   writeFileSync(path: string, data: string): void;
 }
 

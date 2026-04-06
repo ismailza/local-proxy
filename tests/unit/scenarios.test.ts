@@ -84,10 +84,11 @@ describe("matchRule", () => {
 describe("createScenarioLoader", () => {
   const createMockFs = (files: Record<string, string> = {}): FileSystem => ({
     existsSync: (path: string) => path in files,
-    readFileSync: (path: string) => {
-      if (path in files) return files[path]!;
-      throw new Error(`File not found: ${path}`);
-    },
+    readFileSync: ((path: string, encoding?: BufferEncoding): string | Buffer => {
+      const content = files[path];
+      if (content === undefined) throw new Error(`File not found: ${path}`);
+      return encoding !== undefined ? content : Buffer.from(content);
+    }) as FileSystem["readFileSync"],
     writeFileSync: () => {},
   });
 
@@ -149,13 +150,14 @@ describe("createScenarioLoader", () => {
   });
 
   describe("getFixture", () => {
-    it("returns file content when exists", () => {
+    it("returns file content as Buffer when file exists", () => {
       const fs = createMockFs({
         "/base/fixtures/data.json": '{"test": true}',
       });
       const loader = createScenarioLoader(fs, "/base");
       const result = loader.getFixture("fixtures/data.json");
-      expect(result).toBe('{"test": true}');
+      expect(result).toBeInstanceOf(Buffer);
+      expect(result?.toString()).toBe('{"test": true}');
     });
 
     it("returns null when file does not exist", () => {
