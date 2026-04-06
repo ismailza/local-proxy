@@ -2,6 +2,8 @@ export type {
   AppConfig,
   CliOptions,
   Scenario,
+  JsonScenario,
+  FileScenario,
   Rule,
   ScenariosConfig,
 } from "./schemas";
