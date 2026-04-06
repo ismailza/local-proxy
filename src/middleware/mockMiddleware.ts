@@ -47,7 +47,7 @@ export function createMockMiddleware(context: AppContext) {
           .type(scenario.contentType ?? "application/json")
           .send(content);
       } else {
-        res.status(scenario.status ?? 200).json(scenario.json ?? {});
+        res.status(scenario.status ?? 200).json(scenario.json);
       }
     };
 

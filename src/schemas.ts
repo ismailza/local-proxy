@@ -36,11 +36,13 @@ export const jsonScenarioSchema = z
 
 export type JsonScenario = z.infer<typeof jsonScenarioSchema>;
 
-export const fileScenarioSchema = z.object({
-  ...baseScenarioFields,
-  file: z.string(),
-  contentType: z.string().optional(),
-}).strict();
+export const fileScenarioSchema = z
+  .object({
+    ...baseScenarioFields,
+    file: z.string(),
+    contentType: z.string().optional(),
+  })
+  .strict();
 
 export type FileScenario = z.infer<typeof fileScenarioSchema>;
 
