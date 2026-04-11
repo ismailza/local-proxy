@@ -1,5 +1,11 @@
 # local-proxy
 
+## 0.1.1
+
+### Patch Changes
+
+- f179677: update docs
+
 ## 0.0.4
 
 ### Patch Changes
