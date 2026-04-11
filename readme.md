@@ -71,10 +71,57 @@ local-proxy [options]
         "slow": { "status": 200, "delay": 2, "json": { "message": "slow" } },
         "fixture": { "status": 200, "file": "fixtures/example.json" }
       }
+    },
+    {
+      "method": "GET",
+      "match": "/v1/reports/monthly.pdf",
+      "enabled": true,
+      "active_scenario": "success",
+      "scenarios": {
+        "success": {
+          "status": 200,
+          "file": "fixtures/monthly.pdf",
+          "contentType": "application/pdf",
+          "headers": {
+            "Content-Disposition": "attachment; filename=monthly.pdf"
+          }
+        }
+      }
     }
   ]
 }
 ```
+
+## Scenario fields
+
+| Field | Description | Default |
+| --- | --- | --- |
+| `status` | HTTP status code | `200` |
+| `json` | Inline JSON response body | - |
+| `file` | Fixture file path (relative to project root) | - |
+| `contentType` | Override `Content-Type` header | auto-detected |
+| `headers` | Map of additional response headers | - |
+| `delay` | Delay in seconds before responding | - |
+
+Each scenario must include at least one of `json` or `file`.
+
+## Non-JSON responses
+
+`file` scenarios support any content type. Use `contentType` and `headers` to mock binary downloads, PDFs, CSVs, and images:
+
+```json
+{ "status": 200, "file": "fixtures/report.pdf", "contentType": "application/pdf", "headers": { "Content-Disposition": "attachment; filename=report.pdf" } }
+```
+
+```json
+{ "status": 200, "file": "fixtures/export.csv", "contentType": "text/csv", "headers": { "Content-Disposition": "attachment; filename=export.csv" } }
+```
+
+```json
+{ "status": 200, "file": "fixtures/photo.png", "contentType": "image/png" }
+```
+
+When `contentType` is omitted, the type is auto-detected from the file extension. Files are served as raw buffers — binary content is never corrupted.
 
 ## Development
 

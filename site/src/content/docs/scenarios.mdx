@@ -42,9 +42,49 @@ import { Card, CardGrid } from "@astrojs/starlight/components";
 - `status`: HTTP status code (optional, default `200`)
 - `json`: Inline JSON response body
 - `file`: Fixture file path (relative to project base path)
+- `contentType`: Override the `Content-Type` header (optional, auto-detected when omitted)
+- `headers`: Map of additional response headers to set (optional)
 - `delay`: Delay in seconds before response
 
 Each scenario must include at least one of `json` or `file`.
+
+## Non-JSON responses
+
+`file` scenarios support any content type — binary files, PDFs, CSVs, images, and plain text are all handled correctly.
+
+Use `contentType` to set the `Content-Type` header and `headers` for anything else such as `Content-Disposition`:
+
+```json
+{
+  "status": 200,
+  "file": "fixtures/report.pdf",
+  "contentType": "application/pdf",
+  "headers": {
+    "Content-Disposition": "attachment; filename=report.pdf"
+  }
+}
+```
+
+```json
+{
+  "status": 200,
+  "file": "fixtures/export.csv",
+  "contentType": "text/csv",
+  "headers": {
+    "Content-Disposition": "attachment; filename=export.csv"
+  }
+}
+```
+
+```json
+{
+  "status": 200,
+  "file": "fixtures/photo.png",
+  "contentType": "image/png"
+}
+```
+
+When `contentType` is omitted, the proxy detects the type from the file extension. Binary files are read as raw buffers so the content is never corrupted.
 
 ## Best practices
 
@@ -53,7 +93,7 @@ Each scenario must include at least one of `json` or `file`.
     Use labels like `success`, `validation_error`, `server_error`, `timeout`.
   </Card>
   <Card title="Use fixture files for large payloads" icon="seti:folder">
-    Keep mock data in `fixtures/` and reference with `file` for cleaner config.
+    Keep mock data in `fixtures/` and reference with `file` for cleaner config. Supports JSON, CSV, PDF, images, and any binary format.
   </Card>
   <Card title="Model user pain early" icon="warning">
     Add delayed and failing scenarios so UI states are polished before release.
