@@ -2,6 +2,8 @@ import { describe, it, expect } from "vitest";
 import {
   cliOptionsSchema,
   scenarioSchema,
+  jsonScenarioSchema,
+  fileScenarioSchema,
   ruleSchema,
   scenariosConfigSchema,
 } from "../../src/schemas";
@@ -74,13 +76,31 @@ describe("scenarioSchema", () => {
     expect(result.file).toBe("fixtures/data.json");
   });
 
-  it("accepts scenario with both json and file", () => {
-    const result = scenarioSchema.parse({
-      json: { ok: true },
-      file: "fixtures/data.json",
+  it("rejects scenario with contentType alongside json", () => {
+    expect(() =>
+      scenarioSchema.parse({ json: { ok: true }, contentType: "text/csv" })
+    ).toThrow();
+  });
+
+  it("rejects scenario with both json and file", () => {
+    expect(() =>
+      scenarioSchema.parse({ json: { ok: true }, file: "fixtures/data.json" })
+    ).toThrow();
+  });
+
+  it("accepts file scenario without contentType", () => {
+    const result = fileScenarioSchema.parse({ file: "fixtures/report.pdf" });
+    expect(result.file).toBe("fixtures/report.pdf");
+    expect(result.contentType).toBeUndefined();
+  });
+
+  it("accepts file scenario with contentType", () => {
+    const result = fileScenarioSchema.parse({
+      file: "fixtures/report.pdf",
+      contentType: "application/pdf",
     });
-    expect(result.json).toEqual({ ok: true });
-    expect(result.file).toBe("fixtures/data.json");
+    expect(result.file).toBe("fixtures/report.pdf");
+    expect(result.contentType).toBe("application/pdf");
   });
 
   it("accepts optional delay", () => {

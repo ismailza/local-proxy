@@ -82,12 +82,16 @@ describe("matchRule", () => {
 });
 
 describe("createScenarioLoader", () => {
-  const createMockFs = (files: Record<string, string> = {}): FileSystem => ({
+  const createMockFs = (files: Record<string, string | Buffer> = {}): FileSystem => ({
     existsSync: (path: string) => path in files,
-    readFileSync: (path: string) => {
-      if (path in files) return files[path]!;
-      throw new Error(`File not found: ${path}`);
-    },
+    readFileSync: ((path: string, encoding?: BufferEncoding): string | Buffer => {
+      const content = files[path];
+      if (content === undefined) throw new Error(`File not found: ${path}`);
+      if (encoding !== undefined) {
+        return typeof content === "string" ? content : content.toString(encoding);
+      }
+      return typeof content === "string" ? Buffer.from(content) : content;
+    }) as FileSystem["readFileSync"],
     writeFileSync: () => {},
   });
 
@@ -149,13 +153,14 @@ describe("createScenarioLoader", () => {
   });
 
   describe("getFixture", () => {
-    it("returns file content when exists", () => {
+    it("returns file content as Buffer when file exists", () => {
       const fs = createMockFs({
         "/base/fixtures/data.json": '{"test": true}',
       });
       const loader = createScenarioLoader(fs, "/base");
       const result = loader.getFixture("fixtures/data.json");
-      expect(result).toBe('{"test": true}');
+      expect(result).toBeInstanceOf(Buffer);
+      expect(result?.toString()).toBe('{"test": true}');
     });
 
     it("returns null when file does not exist", () => {
@@ -163,6 +168,15 @@ describe("createScenarioLoader", () => {
       const loader = createScenarioLoader(fs, "/base");
       const result = loader.getFixture("fixtures/missing.json");
       expect(result).toBeNull();
+    });
+
+    it("preserves non-UTF-8 binary bytes unchanged", () => {
+      const binaryData = Buffer.from([0xff, 0xd8, 0xff, 0xe0]); // JPEG magic bytes
+      const fs = createMockFs({ "/base/fixtures/image.jpg": binaryData });
+      const loader = createScenarioLoader(fs, "/base");
+      const result = loader.getFixture("fixtures/image.jpg");
+      expect(result).toBeInstanceOf(Buffer);
+      expect(result).toEqual(binaryData);
     });
   });
 });

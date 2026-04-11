@@ -2,6 +2,8 @@ export type {
   AppConfig,
   CliOptions,
   Scenario,
+  JsonScenario,
+  FileScenario,
   Rule,
   ScenariosConfig,
 } from "./schemas";
@@ -15,6 +17,7 @@ export interface Logger {
 export interface FileSystem {
   existsSync(path: string): boolean;
   readFileSync(path: string, encoding: BufferEncoding): string;
+  readFileSync(path: string): Buffer;
   writeFileSync(path: string, data: string): void;
 }
 

@@ -22,16 +22,31 @@ export const appConfigSchema = z.object({
 
 export type AppConfig = z.infer<typeof appConfigSchema>;
 
-export const scenarioSchema = z
+const baseScenarioFields = {
+  status: z.number().int().min(100).max(599).optional().default(200),
+  delay: z.number().positive().optional(),
+};
+
+export const jsonScenarioSchema = z
   .object({
-    status: z.number().int().min(100).max(599).optional().default(200),
-    json: z.record(z.string(), z.unknown()).optional(),
-    file: z.string().optional(),
-    delay: z.number().positive().optional(),
+    ...baseScenarioFields,
+    json: z.record(z.string(), z.unknown()),
   })
-  .refine((data) => data.json !== undefined || data.file !== undefined, {
-    message: 'Scenario must have either "json" or "file"',
-  });
+  .strict();
+
+export type JsonScenario = z.infer<typeof jsonScenarioSchema>;
+
+export const fileScenarioSchema = z
+  .object({
+    ...baseScenarioFields,
+    file: z.string(),
+    contentType: z.string().optional(),
+  })
+  .strict();
+
+export type FileScenario = z.infer<typeof fileScenarioSchema>;
+
+export const scenarioSchema = z.union([jsonScenarioSchema, fileScenarioSchema]);
 
 export type Scenario = z.infer<typeof scenarioSchema>;
 

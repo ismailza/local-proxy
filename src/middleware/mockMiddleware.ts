@@ -34,7 +34,7 @@ export function createMockMiddleware(context: AppContext) {
     );
 
     const respond = () => {
-      if (scenario.file) {
+      if ("file" in scenario) {
         const content = loader.getFixture(scenario.file);
         if (!content) {
           res
@@ -44,10 +44,10 @@ export function createMockMiddleware(context: AppContext) {
         }
         res
           .status(scenario.status ?? 200)
-          .type("application/json")
+          .type(scenario.contentType ?? "application/json")
           .send(content);
       } else {
-        res.status(scenario.status ?? 200).json(scenario.json ?? {});
+        res.status(scenario.status ?? 200).json(scenario.json);
       }
     };
 
