@@ -6,9 +6,13 @@ name: Quality Check
 
 on:
   push:
-    branches: ["main"]
+    branches: 
+      - "main"
+      - "master"
   pull_request_target:
-    branches: ["main"]
+    branches: 
+      - "main"
+      - "master"
     paths:
       - "src/**"
       - "tests/**"
